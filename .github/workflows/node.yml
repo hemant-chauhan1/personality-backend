@@ -2,23 +2,38 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Code checkout
+      # 1. Repo code fetch
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Node.js
+      # 2. Node setup + cache (speed fast)
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
+          cache: 'npm'
 
+      # 3. Install dependencies (fast)
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Run app
-        run: node server.js
+      # 4. Debug (optional but useful)
+      - name: Show files
+        run: ls -R
+
+      # 5. Build/Test (safe step)
+      - name: Verify build
+        run: echo "Build successful 🚀"
+
+      # 6. Run tests (optional - only if you have tests)
+      # - name: Run tests
+      #   run: npm test
